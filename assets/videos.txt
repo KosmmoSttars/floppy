@@ -1,0 +1,14 @@
+# Videos Floppy drags in from behind the screen when "Real YouTube videos" is on.
+# One link per line. Lines starting with # are ignored.
+https://www.youtube.com/watch?v=dQw4w9WgXcQ
+https://www.youtube.com/watch?v=2yJgwwDcgV8
+https://www.youtube.com/watch?v=J---aiyznGQ
+https://www.youtube.com/watch?v=y8Kyi0WNg40
+https://www.youtube.com/watch?v=_OBlgSz8sSM
+https://www.youtube.com/watch?v=93hq0YU3Gqk
+https://www.youtube.com/watch?v=oavMtUWDBTM
+https://www.youtube.com/watch?v=MtN1YnoL46Q
+https://www.youtube.com/watch?v=ZXsQAXx_ao0
+https://www.youtube.com/watch?v=jofNR_WkoCE
+https://www.youtube.com/watch?v=y6120QOlsfU
+https://www.youtube.com/watch?v=dMH0bHeiRNg
