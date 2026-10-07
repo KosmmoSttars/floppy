@@ -1,9 +1,13 @@
-"""Builds dist/Floppy/Floppy.exe with PyInstaller and zips it for sharing.
+"""Builds Floppy with PyInstaller.
 
     python tools/build.py
 
-The sounds are copied next to the .exe (dist/Floppy/assets/sounds), not baked in,
-so anyone can swap a WAV without rebuilding.
+Two results:
+- Floppy.exe in the project folder: a single file with Floppy's face as its icon, the double-click launcher.
+  It uses the project's own assets/ folder (sounds, video list) right next to it.
+- dist/Floppy/Floppy.exe plus dist/Floppy-v1.44.zip: a self-contained folder for sharing.
+
+The sounds are never baked in, so anyone can swap a WAV without rebuilding.
 """
 
 import io
@@ -114,6 +118,47 @@ def main() -> None:
     archive = shutil.make_archive(str(DIST / "Floppy-v1.44"), "zip", DIST, "Floppy")
     print(f"zip    {Path(archive).relative_to(ROOT)}")
     print(f"done   {(APP_DIR / 'Floppy.exe').relative_to(ROOT)}")
+
+    build_launcher()
+
+
+SPEC = """import fnmatch
+TRIM = {trim!r}
+
+def keep(entry):
+    dest = entry[0].replace("\\\\", "/")
+    return not any(fnmatch.fnmatch(dest, pat) or dest.startswith(pat + "/") for pat in TRIM)
+
+a = Analysis([{main!r}], pathex=[{root!r}], excludes=["tkinter"])
+a.binaries = [b for b in a.binaries if keep(b)]
+a.datas = [d for d in a.datas if keep(d)]
+pyz = PYZ(a.pure)
+exe = EXE(pyz, a.scripts, a.binaries, a.datas, [], name="Floppy", icon={icon!r},
+          console=False, upx=False)
+"""
+
+
+def build_launcher() -> None:
+    """One-file Floppy.exe in the project folder, trimmed like the folder build."""
+    work = ROOT / "build" / "onefile"
+    work.mkdir(parents=True, exist_ok=True)
+    spec = work / "Floppy-onefile.spec"
+    spec.write_text(SPEC.format(trim=TRIM, main=str(ROOT / "main.py"), root=str(ROOT), icon=str(ICON)),
+                    encoding="utf-8")
+    subprocess.run([
+        sys.executable, "-m", "PyInstaller", "--noconfirm", "--clean",
+        "--distpath", str(work / "dist"), "--workpath", str(work / "tmp"), str(spec),
+    ], check=True, cwd=ROOT)
+    target = ROOT / "Floppy.exe"
+    shutil.copy2(work / "dist" / "Floppy.exe", target)
+
+    check = subprocess.run([str(target), "--self-check"])
+    report = ROOT / "floppy_check.txt"
+    print(report.read_text(encoding="utf-8"))
+    report.unlink()
+    if check.returncode != 0:
+        raise SystemExit("launcher self-check failed: see the report above")
+    print(f"done   {target.relative_to(ROOT)} ({target.stat().st_size / 2**20:.0f} MB, one file)")
 
 
 def trim() -> None:

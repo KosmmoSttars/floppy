@@ -5,10 +5,14 @@ Full spec: `floppy_design_doc.md` on the desktop.
 
 ## Running
 
+Double-click **`Floppy.exe`** in the project folder (it has Floppy's face as its icon). It is built by
+`python tools/build.py` (see below) and uses the `assets/` folder next to it.
+
+From source:
+
 ```
 pip install -r requirements.txt
 python main.py      # with a console (Ctrl+C quits)
-run.bat             # without a console
 ```
 
 Only one Floppy runs at a time; a second launch quietly exits. He idles at about 2% of one CPU core:
@@ -23,7 +27,8 @@ pip install -r requirements-dev.txt
 python tools/build.py
 ```
 
-The result is `dist/Floppy/Floppy.exe` plus `dist/Floppy-v1.44.zip` for sharing. Sounds live next to the exe in
+The results are `Floppy.exe` in the project folder (a single file, the double-click launcher) and
+`dist/Floppy/Floppy.exe` plus `dist/Floppy-v1.44.zip` for sharing (a self-contained folder that starts faster). Sounds live next to the exe in
 `dist/Floppy/assets/sounds`, so they can be swapped without rebuilding; the YouTube link list is
 `dist/Floppy/assets/videos.txt`. `Floppy.exe --self-check` writes
 `floppy_check.txt` next to the exe, reporting whether every sound was found and decoded.
@@ -148,7 +153,7 @@ through QtMultimedia. Replace any file with your own 16-bit PCM WAV and it is us
 - `floppy/character.py`: the transparent always-on-top window that ties everything together.
 - `floppy/sound.py`: sound bank (preloaded effect pools, volume, on/off).
 - `floppy/config.py`: chaos levels, timings and physics.
-- `tools/make_sounds.py`: synthesizes the default WAVs. `tools/build.py`: icon, PyInstaller build, zip.
+- `tools/make_sounds.py`: synthesizes the default WAVs. `tools/build.py`: icon, PyInstaller builds (folder + one-file launcher), zip.
 - `floppy/win32.py`: Win32 API (active window, visible DWM frame, occlusion checks, fullscreen detection,
   physical-to-logical pixel conversion per monitor scale, user idle time).
 
