@@ -5,7 +5,7 @@
 Two results:
 - Floppy.exe in the project folder: a single file with Floppy's face as its icon, the double-click launcher.
   It uses the project's own assets/ folder (sounds, video list) right next to it.
-- dist/Floppy/Floppy.exe plus dist/Floppy-v1.44.zip: a self-contained folder for sharing.
+- dist/Floppy/Floppy.exe plus dist/Floppy-v<version>.zip: a self-contained folder for sharing.
 
 The sounds are never baked in, so anyone can swap a WAV without rebuilding.
 """
@@ -115,7 +115,10 @@ def main() -> None:
     if check.returncode != 0:
         raise SystemExit("self-check failed: see the report above")
 
-    archive = shutil.make_archive(str(DIST / "Floppy-v1.44"), "zip", DIST, "Floppy")
+    from floppy import __version__
+    for old in DIST.glob("Floppy-v*.zip"):
+        old.unlink()
+    archive = shutil.make_archive(str(DIST / f"Floppy-v{__version__}"), "zip", DIST, "Floppy")
     print(f"zip    {Path(archive).relative_to(ROOT)}")
     print(f"done   {(APP_DIR / 'Floppy.exe').relative_to(ROOT)}")
 

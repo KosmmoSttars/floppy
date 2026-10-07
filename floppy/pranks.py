@@ -137,10 +137,11 @@ class HaulJob:
 
     EDGE_MARGIN = 20
 
-    def __init__(self, floppy, stunt: Haul, target):
+    def __init__(self, floppy, stunt: Haul, target, fallback: Callable[[], "PlayerTarget"] | None = None):
         self.floppy = floppy
         self.stunt = stunt
         self.target = target
+        self._fallback = fallback   # used if the real target never shows up (no browser window)
         self.done = False
         self._pulled = False
         self._parked = False
@@ -167,6 +168,9 @@ class HaulJob:
         if self.done:
             return
         st, tg = self.stunt, self.target
+        if tg.failed and self._fallback is not None and st.in_control and not self._pulled:
+            self.target, self._fallback = self._fallback(), None
+            return
         if tg.failed:
             if st.in_control:
                 self.floppy.say("haul_fail", force=True)
@@ -386,17 +390,20 @@ class PrankManager(QObject):
         stunt = self.floppy.start_haul()
         if stunt is None:
             return
-        target = None
-        if self.youtube:
-            target = self._browser_target()
+        target = self._browser_target() if self.youtube else None
         if target is None:
-            clip = make_clips(self._skin().body)[self._clip_bag.draw()]
-            on = self._sounds.music_on if self._sounds else (lambda: None)
-            off = self._sounds.music_off if self._sounds else (lambda: None)
-            win = MediaPlayerDialog(clip, on, off)
-            self._register(win, None)
-            target = PlayerTarget(win)
-        self._haul = HaulJob(self.floppy, stunt, target)
+            self._haul = HaulJob(self.floppy, stunt, self._player_target())
+        else:
+            self._haul = HaulJob(self.floppy, stunt, target, fallback=self._player_target)
+
+    def _player_target(self) -> PlayerTarget:
+        """Floppy's own Media Player: used when real YouTube is off or no browser window turned up."""
+        clip = make_clips(self._skin().body)[self._clip_bag.draw()]
+        on = self._sounds.music_on if self._sounds else (lambda: None)
+        off = self._sounds.music_off if self._sounds else (lambda: None)
+        win = MediaPlayerDialog(clip, on, off)
+        self._register(win, None)
+        return PlayerTarget(win)
 
     def _browser_target(self) -> BrowserVideo | None:
         links = _video_links()
@@ -558,7 +565,7 @@ class PrankManager(QObject):
             job.tick()
             if job.done:
                 self._haul = None
-                if isinstance(job.target, PlayerTarget):
+                if isinstance(job.target, PlayerTarget) and not sip.isdeleted(job.target.window):
                     win = job.target.window
                     if not sip.isdeleted(win) and not win.isVisible():
                         self._forget(win)   # never made it onto the screen

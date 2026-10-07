@@ -28,7 +28,7 @@ python tools/build.py
 ```
 
 The results are `Floppy.exe` in the project folder (a single file, the double-click launcher) and
-`dist/Floppy/Floppy.exe` plus `dist/Floppy-v1.44.zip` for sharing (a self-contained folder that starts faster). Sounds live next to the exe in
+`dist/Floppy/Floppy.exe` plus `dist/Floppy-v<version>.zip` for sharing (a self-contained folder that starts faster). Sounds live next to the exe in
 `dist/Floppy/assets/sounds`, so they can be swapped without rebuilding; the YouTube link list is
 `dist/Floppy/assets/videos.txt`. `Floppy.exe --self-check` writes
 `floppy_check.txt` next to the exe, reporting whether every sound was found and decoded.
@@ -59,11 +59,11 @@ The results are `Floppy.exe` in the project folder (a single file, the double-cl
 - Fake progress bar: reaches 99%, hangs, then turns out to be a joke (25 variants).
 - Tug of war: drag an error window and Floppy pushes against its side, huffing and sweating, and gives up after 6 seconds.
 - **Video from behind the screen**: he walks to the screen edge, reaches behind it up to the elbows, rummages, and
-  drags a window in with all his weight. By default it's his own Win95 Media Player with pixel cartoons
+  drags in a real YouTube video: he opens a **new** window of the default browser (Chrome, Edge, Firefox, Brave,
+  Opera, Vivaldi, Yandex) with a link from `assets/videos.txt` and hauls it onto the screen. Only that new window
+  is ever moved. Grab the window while he pulls and he lets go. If no browser window turns up (or
+  "Pranks → Real YouTube videos" is unchecked), he brings his own Win95 Media Player with pixel cartoons instead
   (`floppy_dance.avi` with a chiptune, `hamster_wheel.mpg`, `cat_on_keyboard.avi`, the eternal `buffering.avi`).
-  With "Real YouTube videos" on, he opens a **new** window of the default browser (Chrome, Edge, Firefox, Brave,
-  Opera, Vivaldi, Yandex) with a link from `assets/videos.txt` and drags that in instead. Only that new window is
-  ever moved. Grab the window while he pulls and he lets go.
 - **Defragmenter**: "Defragmenting Drive A:" where a tiny Floppy runs across the cluster map carrying blocks by hand,
   gets faster as he goes, reaches 100%... and sneezes, scattering everything again ("Again!" restarts).
 - **Minesweeper**: he plays it himself with his own mouse pointer, flags the obvious, guesses wildly and eventually

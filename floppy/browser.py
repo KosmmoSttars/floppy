@@ -16,7 +16,7 @@ from . import win32
 CHROMIUM = {"chrome.exe", "msedge.exe", "brave.exe", "opera.exe", "launcher.exe", "vivaldi.exe",
             "browser.exe", "chromium.exe", "yandex.exe"}
 FIREFOX = {"firefox.exe", "librewolf.exe", "waterfox.exe", "floorp.exe"}
-FIND_TIMEOUT = 12.0
+FIND_TIMEOUT = 8.0          # then Floppy brings his own Media Player instead
 MOVED_TOLERANCE = 8        # physical px: farther than this from where we put it = the user moved it
 
 

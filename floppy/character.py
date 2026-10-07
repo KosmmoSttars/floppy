@@ -60,7 +60,7 @@ class FloppyWindow(QWidget):
         self.floppy.enabled_pranks = {k for k in PRANKS if k not in disabled}
         self.pranks = PrankManager(self.floppy, settings, self, play=self.sounds.play,
                                    sounds=self.sounds, skin=lambda: self.skin)
-        self.pranks.youtube = str(settings.value("pranks/youtube", "false")).lower() == "true"
+        self.pranks.youtube = str(settings.value("pranks/youtube", "true")).lower() == "true"
         self.bubble = SpeechBubble()
 
         self._press_pos: QPointF | None = None
